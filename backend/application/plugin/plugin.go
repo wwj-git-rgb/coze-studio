@@ -74,7 +74,6 @@ func (p *PluginApplicationService) GetBotDefaultParams(ctx context.Context, req 
 	if err != nil {
 		return nil, errorx.Wrapf(err, "GetDraftAgentToolByName failed, agentID=%d, toolName=%s", req.BotID, req.APIName)
 	}
-
 	reqAPIParams, err := draftAgentTool.ToReqAPIParameter()
 	if err != nil {
 		return nil, err
