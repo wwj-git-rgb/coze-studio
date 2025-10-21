@@ -159,12 +159,21 @@ func Register(r *server.Hertz) {
 			_marketplace := _api.Group("/marketplace", _marketplaceMw()...)
 			{
 				_product := _marketplace.Group("/product", _productMw()...)
+				_product.GET("/call_info", append(_publicgetproductcallinfoMw(), coze.PublicGetProductCallInfo)...)
+				_product.GET("/config", append(_publicgetmarketpluginconfigMw(), coze.PublicGetMarketPluginConfig)...)
 				_product.GET("/detail", append(_publicgetproductdetailMw(), coze.PublicGetProductDetail)...)
 				_product.POST("/duplicate", append(_publicduplicateproductMw(), coze.PublicDuplicateProduct)...)
 				_product.POST("/favorite", append(_publicfavoriteproductMw(), coze.PublicFavoriteProduct)...)
 				_favorite := _product.Group("/favorite", _favoriteMw()...)
 				_favorite.GET("/list.v2", append(_publicgetuserfavoritelistv2Mw(), coze.PublicGetUserFavoriteListV2)...)
 				_product.GET("/list", append(_publicgetproductlistMw(), coze.PublicGetProductList)...)
+				_product.GET("/search", append(_publicsearchproductMw(), coze.PublicSearchProduct)...)
+				_search0 := _product.Group("/search", _search0Mw()...)
+				_search0.GET("/suggest", append(_publicsearchsuggestMw(), coze.PublicSearchSuggest)...)
+				{
+					_category := _product.Group("/category", _categoryMw()...)
+					_category.GET("/list", append(_publicgetproductcategorylistMw(), coze.PublicGetProductCategoryList)...)
+				}
 			}
 		}
 		{

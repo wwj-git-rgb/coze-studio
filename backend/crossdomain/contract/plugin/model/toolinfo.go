@@ -25,6 +25,7 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 	gonanoid "github.com/matoous/go-nanoid"
 
+	"github.com/coze-dev/coze-studio/backend/api/model/app/bot_common"
 	productAPI "github.com/coze-dev/coze-studio/backend/api/model/marketplace/product_public_api"
 	"github.com/coze-dev/coze-studio/backend/api/model/plugin_develop/common"
 	"github.com/coze-dev/coze-studio/backend/crossdomain/contract/plugin/consts"
@@ -42,6 +43,9 @@ type ToolInfo struct {
 
 	ActivatedStatus *consts.ActivatedStatus
 	DebugStatus     *common.APIDebugStatus
+
+	Source *bot_common.PluginFrom
+	Extra  map[string]any
 
 	Method    *string
 	SubURL    *string
@@ -64,6 +68,10 @@ func (t ToolInfo) GetDesc() string {
 
 func (t ToolInfo) GetVersion() string {
 	return ptr.FromOrDefault(t.Version, "")
+}
+
+func (t ToolInfo) GetPluginFrom() bot_common.PluginFrom {
+	return ptr.FromOrDefault(t.Source, 0)
 }
 
 func (t ToolInfo) GetActivatedStatus() consts.ActivatedStatus {
@@ -600,7 +608,9 @@ type VersionAgentTool struct {
 	ToolName *string
 	ToolID   int64
 
+	PluginID     int64
 	AgentVersion *string
+	PluginFrom   *bot_common.PluginFrom
 }
 
 type MGetAgentToolsRequest struct {
@@ -617,6 +627,8 @@ type ExecuteToolRequest struct {
 	ToolID        int64
 	ExecDraftTool bool // if true, execute draft tool
 	ExecScene     consts.ExecuteScene
+
+	PluginFrom *bot_common.PluginFrom
 
 	ArgumentsInJson string
 }

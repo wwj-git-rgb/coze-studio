@@ -22,8 +22,8 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
-
 	"github.com/apache/thrift/lib/go/thrift"
+	"github.com/coze-dev/coze-studio/backend/api/model/app/bot_common"
 	"github.com/coze-dev/coze-studio/backend/api/model/base"
 )
 
@@ -45023,13 +45023,14 @@ func (p *WorkflowNodeDebugV2Response) String() string {
 }
 
 type GetApiDetailRequest struct {
-	PluginID      string     `thrift:"pluginID,1" form:"pluginID" json:"pluginID" query:"pluginID"`
-	ApiName       string     `thrift:"apiName,2" form:"apiName" json:"apiName" query:"apiName"`
-	SpaceID       string     `thrift:"space_id,3" form:"space_id" json:"space_id" query:"space_id"`
-	APIID         string     `thrift:"api_id,4" form:"api_id" json:"api_id" query:"api_id"`
-	ProjectID     *string    `thrift:"project_id,5,optional" form:"project_id" json:"project_id,omitempty" query:"project_id"`
-	PluginVersion *string    `thrift:"plugin_version,6,optional" form:"plugin_version" json:"plugin_version,omitempty" query:"plugin_version"`
-	Base          *base.Base `thrift:"Base,255,optional" form:"Base" json:"Base,omitempty" query:"Base"`
+	PluginID      string                 `thrift:"pluginID,1" form:"pluginID" json:"pluginID" query:"pluginID"`
+	ApiName       string                 `thrift:"apiName,2" form:"apiName" json:"apiName" query:"apiName"`
+	SpaceID       string                 `thrift:"space_id,3" form:"space_id" json:"space_id" query:"space_id"`
+	APIID         string                 `thrift:"api_id,4" form:"api_id" json:"api_id" query:"api_id"`
+	ProjectID     *string                `thrift:"project_id,5,optional" form:"project_id" json:"project_id,omitempty" query:"project_id"`
+	PluginVersion *string                `thrift:"plugin_version,6,optional" form:"plugin_version" json:"plugin_version,omitempty" query:"plugin_version"`
+	PluginFrom    *bot_common.PluginFrom `thrift:"plugin_from,7,optional" form:"plugin_from" json:"plugin_from,omitempty" query:"plugin_from"`
+	Base          *base.Base             `thrift:"Base,255,optional" form:"Base" json:"Base,omitempty" query:"Base"`
 }
 
 func NewGetApiDetailRequest() *GetApiDetailRequest {
@@ -45073,6 +45074,15 @@ func (p *GetApiDetailRequest) GetPluginVersion() (v string) {
 	return *p.PluginVersion
 }
 
+var GetApiDetailRequest_PluginFrom_DEFAULT bot_common.PluginFrom
+
+func (p *GetApiDetailRequest) GetPluginFrom() (v bot_common.PluginFrom) {
+	if !p.IsSetPluginFrom() {
+		return GetApiDetailRequest_PluginFrom_DEFAULT
+	}
+	return *p.PluginFrom
+}
+
 var GetApiDetailRequest_Base_DEFAULT *base.Base
 
 func (p *GetApiDetailRequest) GetBase() (v *base.Base) {
@@ -45089,6 +45099,7 @@ var fieldIDToName_GetApiDetailRequest = map[int16]string{
 	4:   "api_id",
 	5:   "project_id",
 	6:   "plugin_version",
+	7:   "plugin_from",
 	255: "Base",
 }
 
@@ -45098,6 +45109,10 @@ func (p *GetApiDetailRequest) IsSetProjectID() bool {
 
 func (p *GetApiDetailRequest) IsSetPluginVersion() bool {
 	return p.PluginVersion != nil
+}
+
+func (p *GetApiDetailRequest) IsSetPluginFrom() bool {
+	return p.PluginFrom != nil
 }
 
 func (p *GetApiDetailRequest) IsSetBase() bool {
@@ -45165,6 +45180,14 @@ func (p *GetApiDetailRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 6:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField6(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 7:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField7(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -45273,6 +45296,18 @@ func (p *GetApiDetailRequest) ReadField6(iprot thrift.TProtocol) error {
 	p.PluginVersion = _field
 	return nil
 }
+func (p *GetApiDetailRequest) ReadField7(iprot thrift.TProtocol) error {
+
+	var _field *bot_common.PluginFrom
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		tmp := bot_common.PluginFrom(v)
+		_field = &tmp
+	}
+	p.PluginFrom = _field
+	return nil
+}
 func (p *GetApiDetailRequest) ReadField255(iprot thrift.TProtocol) error {
 	_field := base.NewBase()
 	if err := _field.Read(iprot); err != nil {
@@ -45310,6 +45345,10 @@ func (p *GetApiDetailRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField6(oprot); err != nil {
 			fieldId = 6
+			goto WriteFieldError
+		}
+		if err = p.writeField7(oprot); err != nil {
+			fieldId = 7
 			goto WriteFieldError
 		}
 		if err = p.writeField255(oprot); err != nil {
@@ -45433,6 +45472,24 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+func (p *GetApiDetailRequest) writeField7(oprot thrift.TProtocol) (err error) {
+	if p.IsSetPluginFrom() {
+		if err = oprot.WriteFieldBegin("plugin_from", thrift.I32, 7); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI32(int32(*p.PluginFrom)); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 end error: ", p), err)
 }
 func (p *GetApiDetailRequest) writeField255(oprot thrift.TProtocol) (err error) {
 	if p.IsSetBase() {
@@ -45646,24 +45703,25 @@ func (p *DebugExample) String() string {
 }
 
 type ApiDetailData struct {
-	PluginID                string        `thrift:"pluginID,1" form:"pluginID" json:"pluginID" query:"pluginID"`
-	ApiName                 string        `thrift:"apiName,2" form:"apiName" json:"apiName" query:"apiName"`
-	Inputs                  string        `thrift:"inputs,3" form:"inputs" json:"inputs" query:"inputs"`
-	Outputs                 string        `thrift:"outputs,4" form:"outputs" json:"outputs" query:"outputs"`
-	Icon                    string        `thrift:"icon,5" form:"icon" json:"icon" query:"icon"`
-	Name                    string        `thrift:"name,6" form:"name" json:"name" query:"name"`
-	Desc                    string        `thrift:"desc,7" form:"desc" json:"desc" query:"desc"`
-	PluginProductStatus     int64         `thrift:"pluginProductStatus,8" form:"pluginProductStatus" json:"pluginProductStatus" query:"pluginProductStatus"`
-	PluginProductUnlistType int64         `thrift:"pluginProductUnlistType,9" form:"pluginProductUnlistType" json:"pluginProductUnlistType" query:"pluginProductUnlistType"`
-	SpaceID                 string        `thrift:"spaceID,10" form:"spaceID" json:"spaceID" query:"spaceID"`
-	DebugExample            *DebugExample `thrift:"debugExample,11,optional" form:"debugExample" json:"debugExample,omitempty" query:"debugExample"`
-	UpdateTime              int64         `thrift:"updateTime,12" form:"updateTime" json:"updateTime" query:"updateTime"`
-	ProjectID               *string       `thrift:"projectID,13,optional" form:"projectID" json:"projectID,omitempty" query:"projectID"`
-	Version                 *string       `thrift:"version,14,optional" form:"version" json:"version,omitempty" query:"version"`
-	PluginType              PluginType    `thrift:"pluginType,16" form:"pluginType" json:"pluginType" query:"pluginType"`
-	LatestVersion           *string       `thrift:"latest_version,17,optional" form:"latest_version" json:"latest_version,omitempty" query:"latest_version"`
-	LatestVersionName       *string       `thrift:"latest_version_name,18,optional" form:"latest_version_name" json:"latest_version_name,omitempty" query:"latest_version_name"`
-	VersionName             *string       `thrift:"version_name,19,optional" form:"version_name" json:"version_name,omitempty" query:"version_name"`
+	PluginID                string                 `thrift:"pluginID,1" form:"pluginID" json:"pluginID" query:"pluginID"`
+	ApiName                 string                 `thrift:"apiName,2" form:"apiName" json:"apiName" query:"apiName"`
+	Inputs                  string                 `thrift:"inputs,3" form:"inputs" json:"inputs" query:"inputs"`
+	Outputs                 string                 `thrift:"outputs,4" form:"outputs" json:"outputs" query:"outputs"`
+	Icon                    string                 `thrift:"icon,5" form:"icon" json:"icon" query:"icon"`
+	Name                    string                 `thrift:"name,6" form:"name" json:"name" query:"name"`
+	Desc                    string                 `thrift:"desc,7" form:"desc" json:"desc" query:"desc"`
+	PluginProductStatus     int64                  `thrift:"pluginProductStatus,8" form:"pluginProductStatus" json:"pluginProductStatus" query:"pluginProductStatus"`
+	PluginProductUnlistType int64                  `thrift:"pluginProductUnlistType,9" form:"pluginProductUnlistType" json:"pluginProductUnlistType" query:"pluginProductUnlistType"`
+	SpaceID                 string                 `thrift:"spaceID,10" form:"spaceID" json:"spaceID" query:"spaceID"`
+	DebugExample            *DebugExample          `thrift:"debugExample,11,optional" form:"debugExample" json:"debugExample,omitempty" query:"debugExample"`
+	UpdateTime              int64                  `thrift:"updateTime,12" form:"updateTime" json:"updateTime" query:"updateTime"`
+	ProjectID               *string                `thrift:"projectID,13,optional" form:"projectID" json:"projectID,omitempty" query:"projectID"`
+	Version                 *string                `thrift:"version,14,optional" form:"version" json:"version,omitempty" query:"version"`
+	PluginType              PluginType             `thrift:"pluginType,16" form:"pluginType" json:"pluginType" query:"pluginType"`
+	LatestVersion           *string                `thrift:"latest_version,17,optional" form:"latest_version" json:"latest_version,omitempty" query:"latest_version"`
+	LatestVersionName       *string                `thrift:"latest_version_name,18,optional" form:"latest_version_name" json:"latest_version_name,omitempty" query:"latest_version_name"`
+	VersionName             *string                `thrift:"version_name,19,optional" form:"version_name" json:"version_name,omitempty" query:"version_name"`
+	PluginFrom              *bot_common.PluginFrom `thrift:"plugin_from,50,optional" form:"plugin_from" json:"plugin_from,omitempty" query:"plugin_from"`
 }
 
 func NewApiDetailData() *ApiDetailData {
@@ -45775,6 +45833,15 @@ func (p *ApiDetailData) GetVersionName() (v string) {
 	return *p.VersionName
 }
 
+var ApiDetailData_PluginFrom_DEFAULT bot_common.PluginFrom
+
+func (p *ApiDetailData) GetPluginFrom() (v bot_common.PluginFrom) {
+	if !p.IsSetPluginFrom() {
+		return ApiDetailData_PluginFrom_DEFAULT
+	}
+	return *p.PluginFrom
+}
+
 var fieldIDToName_ApiDetailData = map[int16]string{
 	1:  "pluginID",
 	2:  "apiName",
@@ -45794,6 +45861,7 @@ var fieldIDToName_ApiDetailData = map[int16]string{
 	17: "latest_version",
 	18: "latest_version_name",
 	19: "version_name",
+	50: "plugin_from",
 }
 
 func (p *ApiDetailData) IsSetDebugExample() bool {
@@ -45818,6 +45886,10 @@ func (p *ApiDetailData) IsSetLatestVersionName() bool {
 
 func (p *ApiDetailData) IsSetVersionName() bool {
 	return p.VersionName != nil
+}
+
+func (p *ApiDetailData) IsSetPluginFrom() bool {
+	return p.PluginFrom != nil
 }
 
 func (p *ApiDetailData) Read(iprot thrift.TProtocol) (err error) {
@@ -45977,6 +46049,14 @@ func (p *ApiDetailData) Read(iprot thrift.TProtocol) (err error) {
 		case 19:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField19(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 50:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField50(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -46206,6 +46286,18 @@ func (p *ApiDetailData) ReadField19(iprot thrift.TProtocol) error {
 	p.VersionName = _field
 	return nil
 }
+func (p *ApiDetailData) ReadField50(iprot thrift.TProtocol) error {
+
+	var _field *bot_common.PluginFrom
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		tmp := bot_common.PluginFrom(v)
+		_field = &tmp
+	}
+	p.PluginFrom = _field
+	return nil
+}
 
 func (p *ApiDetailData) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -46283,6 +46375,10 @@ func (p *ApiDetailData) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField19(oprot); err != nil {
 			fieldId = 19
+			goto WriteFieldError
+		}
+		if err = p.writeField50(oprot); err != nil {
+			fieldId = 50
 			goto WriteFieldError
 		}
 	}
@@ -46602,6 +46698,24 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 19 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 19 end error: ", p), err)
+}
+func (p *ApiDetailData) writeField50(oprot thrift.TProtocol) (err error) {
+	if p.IsSetPluginFrom() {
+		if err = oprot.WriteFieldBegin("plugin_from", thrift.I32, 50); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI32(int32(*p.PluginFrom)); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 50 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 50 end error: ", p), err)
 }
 
 func (p *ApiDetailData) String() string {
@@ -52002,9 +52116,10 @@ type FCPluginSetting struct {
 	ResponseParams []*APIParameter `thrift:"response_params,5" form:"response_params" json:"response_params" query:"response_params"`
 	ResponseStyle  *ResponseStyle  `thrift:"response_style,6" form:"response_style" json:"response_style" query:"response_style"`
 	// This issue is temporarily not supported.
-	AsyncConf     *AsyncConf `thrift:"async_conf,7,optional" form:"async_conf" json:"async_conf,omitempty" query:"async_conf"`
-	IsDraft       bool       `thrift:"is_draft,8" form:"is_draft" json:"is_draft" query:"is_draft"`
-	PluginVersion string     `thrift:"plugin_version,9" form:"plugin_version" json:"plugin_version" query:"plugin_version"`
+	AsyncConf     *AsyncConf             `thrift:"async_conf,7,optional" form:"async_conf" json:"async_conf,omitempty" query:"async_conf"`
+	IsDraft       bool                   `thrift:"is_draft,8" form:"is_draft" json:"is_draft" query:"is_draft"`
+	PluginVersion string                 `thrift:"plugin_version,9" form:"plugin_version" json:"plugin_version" query:"plugin_version"`
+	PluginFrom    *bot_common.PluginFrom `thrift:"plugin_from,50,optional" form:"plugin_from" json:"plugin_from,omitempty" query:"plugin_from"`
 }
 
 func NewFCPluginSetting() *FCPluginSetting {
@@ -52060,16 +52175,26 @@ func (p *FCPluginSetting) GetPluginVersion() (v string) {
 	return p.PluginVersion
 }
 
+var FCPluginSetting_PluginFrom_DEFAULT bot_common.PluginFrom
+
+func (p *FCPluginSetting) GetPluginFrom() (v bot_common.PluginFrom) {
+	if !p.IsSetPluginFrom() {
+		return FCPluginSetting_PluginFrom_DEFAULT
+	}
+	return *p.PluginFrom
+}
+
 var fieldIDToName_FCPluginSetting = map[int16]string{
-	1: "plugin_id",
-	2: "api_id",
-	3: "api_name",
-	4: "request_params",
-	5: "response_params",
-	6: "response_style",
-	7: "async_conf",
-	8: "is_draft",
-	9: "plugin_version",
+	1:  "plugin_id",
+	2:  "api_id",
+	3:  "api_name",
+	4:  "request_params",
+	5:  "response_params",
+	6:  "response_style",
+	7:  "async_conf",
+	8:  "is_draft",
+	9:  "plugin_version",
+	50: "plugin_from",
 }
 
 func (p *FCPluginSetting) IsSetResponseStyle() bool {
@@ -52078,6 +52203,10 @@ func (p *FCPluginSetting) IsSetResponseStyle() bool {
 
 func (p *FCPluginSetting) IsSetAsyncConf() bool {
 	return p.AsyncConf != nil
+}
+
+func (p *FCPluginSetting) IsSetPluginFrom() bool {
+	return p.PluginFrom != nil
 }
 
 func (p *FCPluginSetting) Read(iprot thrift.TProtocol) (err error) {
@@ -52165,6 +52294,14 @@ func (p *FCPluginSetting) Read(iprot thrift.TProtocol) (err error) {
 		case 9:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField9(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 50:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField50(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -52316,6 +52453,18 @@ func (p *FCPluginSetting) ReadField9(iprot thrift.TProtocol) error {
 	p.PluginVersion = _field
 	return nil
 }
+func (p *FCPluginSetting) ReadField50(iprot thrift.TProtocol) error {
+
+	var _field *bot_common.PluginFrom
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		tmp := bot_common.PluginFrom(v)
+		_field = &tmp
+	}
+	p.PluginFrom = _field
+	return nil
+}
 
 func (p *FCPluginSetting) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -52357,6 +52506,10 @@ func (p *FCPluginSetting) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField9(oprot); err != nil {
 			fieldId = 9
+			goto WriteFieldError
+		}
+		if err = p.writeField50(oprot); err != nil {
+			fieldId = 50
 			goto WriteFieldError
 		}
 	}
@@ -52538,6 +52691,24 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 9 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 9 end error: ", p), err)
+}
+func (p *FCPluginSetting) writeField50(oprot thrift.TProtocol) (err error) {
+	if p.IsSetPluginFrom() {
+		if err = oprot.WriteFieldBegin("plugin_from", thrift.I32, 50); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI32(int32(*p.PluginFrom)); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 50 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 50 end error: ", p), err)
 }
 
 func (p *FCPluginSetting) String() string {
@@ -54024,11 +54195,12 @@ func (p *GetLLMNodeFCSettingsMergedResponse) String() string {
 }
 
 type PluginFCItem struct {
-	PluginID      string  `thrift:"plugin_id,1" form:"plugin_id" json:"plugin_id" query:"plugin_id"`
-	APIID         string  `thrift:"api_id,2" form:"api_id" json:"api_id" query:"api_id"`
-	APIName       string  `thrift:"api_name,3" form:"api_name" json:"api_name" query:"api_name"`
-	IsDraft       bool    `thrift:"is_draft,4" form:"is_draft" json:"is_draft" query:"is_draft"`
-	PluginVersion *string `thrift:"plugin_version,5,optional" form:"plugin_version" json:"plugin_version,omitempty" query:"plugin_version"`
+	PluginID      string                 `thrift:"plugin_id,1" form:"plugin_id" json:"plugin_id" query:"plugin_id"`
+	APIID         string                 `thrift:"api_id,2" form:"api_id" json:"api_id" query:"api_id"`
+	APIName       string                 `thrift:"api_name,3" form:"api_name" json:"api_name" query:"api_name"`
+	IsDraft       bool                   `thrift:"is_draft,4" form:"is_draft" json:"is_draft" query:"is_draft"`
+	PluginVersion *string                `thrift:"plugin_version,5,optional" form:"plugin_version" json:"plugin_version,omitempty" query:"plugin_version"`
+	PluginFrom    *bot_common.PluginFrom `thrift:"plugin_from,6,optional" form:"plugin_from" json:"plugin_from,omitempty" query:"plugin_from"`
 }
 
 func NewPluginFCItem() *PluginFCItem {
@@ -54063,16 +54235,30 @@ func (p *PluginFCItem) GetPluginVersion() (v string) {
 	return *p.PluginVersion
 }
 
+var PluginFCItem_PluginFrom_DEFAULT bot_common.PluginFrom
+
+func (p *PluginFCItem) GetPluginFrom() (v bot_common.PluginFrom) {
+	if !p.IsSetPluginFrom() {
+		return PluginFCItem_PluginFrom_DEFAULT
+	}
+	return *p.PluginFrom
+}
+
 var fieldIDToName_PluginFCItem = map[int16]string{
 	1: "plugin_id",
 	2: "api_id",
 	3: "api_name",
 	4: "is_draft",
 	5: "plugin_version",
+	6: "plugin_from",
 }
 
 func (p *PluginFCItem) IsSetPluginVersion() bool {
 	return p.PluginVersion != nil
+}
+
+func (p *PluginFCItem) IsSetPluginFrom() bool {
+	return p.PluginFrom != nil
 }
 
 func (p *PluginFCItem) Read(iprot thrift.TProtocol) (err error) {
@@ -54128,6 +54314,14 @@ func (p *PluginFCItem) Read(iprot thrift.TProtocol) (err error) {
 		case 5:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField5(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 6:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -54217,6 +54411,18 @@ func (p *PluginFCItem) ReadField5(iprot thrift.TProtocol) error {
 	p.PluginVersion = _field
 	return nil
 }
+func (p *PluginFCItem) ReadField6(iprot thrift.TProtocol) error {
+
+	var _field *bot_common.PluginFrom
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		tmp := bot_common.PluginFrom(v)
+		_field = &tmp
+	}
+	p.PluginFrom = _field
+	return nil
+}
 
 func (p *PluginFCItem) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -54242,6 +54448,10 @@ func (p *PluginFCItem) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField5(oprot); err != nil {
 			fieldId = 5
+			goto WriteFieldError
+		}
+		if err = p.writeField6(oprot); err != nil {
+			fieldId = 6
 			goto WriteFieldError
 		}
 	}
@@ -54343,6 +54553,24 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
+}
+func (p *PluginFCItem) writeField6(oprot thrift.TProtocol) (err error) {
+	if p.IsSetPluginFrom() {
+		if err = oprot.WriteFieldBegin("plugin_from", thrift.I32, 6); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI32(int32(*p.PluginFrom)); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
 }
 
 func (p *PluginFCItem) String() string {
