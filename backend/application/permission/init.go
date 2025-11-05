@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package entity
+package permission
 
 import (
-	"github.com/coze-dev/coze-studio/backend/crossdomain/app/model"
-	"github.com/coze-dev/coze-studio/backend/types/consts"
+	"github.com/coze-dev/coze-studio/backend/domain/permission"
 )
 
-var ConnectorIDWhiteList = []int64{
-	consts.WebSDKConnectorID,
-	consts.APIConnectorID,
+type ServiceComponents struct {
 }
 
-type ConnectorPublishRecord = model.ConnectorPublishRecord
-type PublishConfig = model.PublishConfig
-type SelectedWorkflow = model.SelectedWorkflow
+type PermissionApplicationService struct {
+	DomainSVC permission.Permission
+}
+
+func InitService(components *ServiceComponents) *PermissionApplicationService {
+	domainSVC := permission.NewService()
+
+	return &PermissionApplicationService{
+		DomainSVC: domainSVC,
+	}
+}

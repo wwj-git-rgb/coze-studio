@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package entity
+package app
 
 import (
-	"github.com/coze-dev/coze-studio/backend/crossdomain/app/model"
-	"github.com/coze-dev/coze-studio/backend/types/consts"
+	"context"
+
+	"github.com/coze-dev/coze-studio/backend/domain/app/entity"
 )
 
-var ConnectorIDWhiteList = []int64{
-	consts.WebSDKConnectorID,
-	consts.APIConnectorID,
+var defaultSVC AppService
+
+func DefaultSVC() AppService {
+	return defaultSVC
 }
 
-type ConnectorPublishRecord = model.ConnectorPublishRecord
-type PublishConfig = model.PublishConfig
-type SelectedWorkflow = model.SelectedWorkflow
+func SetDefaultSVC(c AppService) {
+	defaultSVC = c
+}
+
+type AppService interface {
+	GetDraftAPP(ctx context.Context, appID int64) (app *entity.APP, err error)
+}

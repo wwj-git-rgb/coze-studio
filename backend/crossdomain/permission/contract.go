@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package entity
+package permission
 
 import (
-	"github.com/coze-dev/coze-studio/backend/crossdomain/app/model"
-	"github.com/coze-dev/coze-studio/backend/types/consts"
+	"context"
+
+	"github.com/coze-dev/coze-studio/backend/crossdomain/permission/model"
 )
 
-var ConnectorIDWhiteList = []int64{
-	consts.WebSDKConnectorID,
-	consts.APIConnectorID,
+var defaultSVC Permission
+
+func DefaultSVC() Permission {
+	return defaultSVC
 }
 
-type ConnectorPublishRecord = model.ConnectorPublishRecord
-type PublishConfig = model.PublishConfig
-type SelectedWorkflow = model.SelectedWorkflow
+func SetDefaultSVC(c Permission) {
+	defaultSVC = c
+}
+
+type Permission interface {
+	CheckAuthz(ctx context.Context, req *model.CheckAuthzData) (*model.CheckAuthzResult, error)
+}

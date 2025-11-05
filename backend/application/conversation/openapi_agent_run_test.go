@@ -159,8 +159,9 @@ func TestOpenapiAgentRun_Success(t *testing.T) {
 	// Mock agent check
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -217,8 +218,9 @@ func TestOpenapiAgentRun_CheckConversationError(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -240,8 +242,9 @@ func TestOpenapiAgentRun_ConversationPermissionError(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -268,8 +271,9 @@ func TestOpenapiAgentRun_CreateNewConversation(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -305,7 +309,8 @@ func TestOpenapiAgentRun_AgentRunError(t *testing.T) {
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
 			AgentID: 67890,
-			SpaceID: 54321,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -339,8 +344,9 @@ func TestOpenapiAgentRun_WithShortcutCommand(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -379,8 +385,9 @@ func TestOpenapiAgentRun_WithMultipleMessages(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -421,8 +428,9 @@ func TestOpenapiAgentRun_WithAssistantMessage(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -490,8 +498,9 @@ func TestOpenapiAgentRun_WithMixedContentTypes(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -554,8 +563,9 @@ func TestOpenapiAgentRun_ParseAdditionalMessages_InvalidRole(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -597,8 +607,9 @@ func TestOpenapiAgentRun_ParseAdditionalMessages_InvalidType(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -640,8 +651,9 @@ func TestOpenapiAgentRun_ParseAdditionalMessages_AnswerWithNonTextContent(t *tes
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -681,8 +693,9 @@ func TestOpenapiAgentRun_ParseAdditionalMessages_MixApiWithFileURL(t *testing.T)
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -725,8 +738,9 @@ func TestOpenapiAgentRun_ParseAdditionalMessages_MixApiWithFileID(t *testing.T) 
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -780,8 +794,9 @@ func TestOpenapiAgentRun_ParseAdditionalMessages_FileIDError(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -829,8 +844,9 @@ func TestOpenapiAgentRun_ParseAdditionalMessages_EmptyContent(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
@@ -881,8 +897,9 @@ func TestOpenapiAgentRun_ParseAdditionalMessages_NilMessage(t *testing.T) {
 	// Mock agent check success
 	mockAgent := &saEntity.SingleAgent{
 		SingleAgent: &singleagent.SingleAgent{
-			AgentID: 67890,
-			SpaceID: 54321,
+			AgentID:   67890,
+			SpaceID:   54321,
+			CreatorID: 12345,
 		},
 	}
 	mockSingleAgent.EXPECT().ObtainAgentByIdentity(ctx, gomock.Any()).Return(mockAgent, nil)
